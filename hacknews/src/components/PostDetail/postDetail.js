@@ -1,45 +1,79 @@
 import React from 'react'
 import { useCallback } from 'react';
-import { useParams, useState, useEffect } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
+import classes from './PostDetail.module.css'
 function PostDetail() {
     const Params = useParams();
-    const [data, setData] = useState([]);
+
+    const [res, setRes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchDataHandler = useCallback(async () => {
+  const fetchResHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(` http://hn.algolia.com/api/v1/items/${Params}` );
+      const response = await fetch(` http://hn.algolia.com/api/v1/items/${Params.objectID}` );
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
 
-      const data = await response.json();
+      const result = await response.json();
 
-      const transformedData = data.hits.map((postData) => {
+      const resData = result.children.map((postData) => {
         return {
-          title: postData.title,
-          objectID:postData.objectID,
+          title: postData.text,
+          author:postData.author,
+          points:postData.points,
         };
       });
-    
-      setData(transformedData);
+    // console.log(transformedData)
+      setRes(resData);
     } catch (error) {
       setError(error.message);
     }
     setIsLoading(false);
-});
+}, [Params.objectID]);
 
 
   useEffect(() => {
-    fetchDataHandler();
-  }, [fetchDataHandler]);
+    fetchResHandler();
+  }, [fetchResHandler]);
 
+  
+  let content = <h1 className={classes.center}>Found no data.</h1>;
+
+  if (error) {
+    content = <p>{error}</p>;
+  }
+
+  if (res.length > 0) {
+    content = <div>
+    <ul >
+    {res.map((post) => (
+      <li >
+      <div className={classes.center}>
+      <h4>{post.author}</h4>
+      <h4>{post.points}</h4>
+      </div>
+      <h5 className={classes.small}>{post.title}</h5>
+    </li>
+       
+    ))}
+  </ul>
+  </div>
+    
+  }
+
+  if (isLoading) {
+    content = <p className={classes.para}>Loading...</p>;
+  }
+ 
+ 
     return (
         <div>
-            <h1>{}</h1>
+            {content}
         </div>
     )
 }

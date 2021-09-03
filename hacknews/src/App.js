@@ -1,6 +1,6 @@
 import React from "react";
 import { Fragment } from "react";
-import PostDetail from "./components/PostDetail/postDetail";
+import PostDetail from "./components/PostDetail/PostDetail";
 import { Route, Switch } from "react-router-dom";
 import SearchBar from "./components/SearchBar/SearchBar";
 function App() {

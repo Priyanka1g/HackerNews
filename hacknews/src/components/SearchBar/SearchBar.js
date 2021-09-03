@@ -64,16 +64,18 @@ const SearchBar=() =>{
     content = <p>{error}</p>;
   }
 
-  if (isLoading) {
+  else if (isLoading) {
     content = <p>Loading...</p>;
   }
-  if(data.length === 0){
+  else if(data.length === 0){
     content = <p>Loading...</p>;
   }
-  if(searchedData.length===0){
+  else if(searchedData.length===0){
     content = <UserList users={data} />;
+  
+
   }
-  if (searchedData.length > 0) {
+  else if (searchedData.length > 0) {
     content = <UserList users={searchedData} />;
   }
 
